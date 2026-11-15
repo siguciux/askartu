@@ -3,10 +3,15 @@ import { fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
 import { ROLE_STORAGE_KEY } from '@/lib/role';
 
+import { fake } from '../test-utils/fake-backend';
+
 const APP_DIR = './src/app';
 
 beforeEach(async () => {
   await AsyncStorage.clear();
+  fake.reset();
+  // Šie testai tikrina ekranus be serverio (kaip 1 etape).
+  fake.configured = false;
 });
 
 describe('pirmas atidarymas ir vaidmens pasirinkimas', () => {
@@ -28,7 +33,7 @@ describe('pirmas atidarymas ir vaidmens pasirinkimas', () => {
   it('„Aš pagalbininkas“ atidaro pagalbininko skirtukus', async () => {
     const r = await renderRouter(APP_DIR);
     await fireEvent.press(await screen.findByLabelText(/^Aš pagalbininkas/));
-    expect(await screen.findByText(/Čia matysite, ar senjoras/)).toBeOnTheScreen();
+    expect(await screen.findByText(/matysite, ar senjoras/)).toBeOnTheScreen();
     for (const tab of ['Vaistai', 'Gidas', 'Nustatymai']) {
       expect(screen.getAllByText(tab).length).toBeGreaterThan(0);
     }

@@ -29,6 +29,14 @@
       "expo-router",
       "expo-font",
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Kamera reikalinga senjoro telefono QR kodui nuskenuoti.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#0b5d6b",

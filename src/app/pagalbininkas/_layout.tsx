@@ -1,9 +1,16 @@
+import { Redirect } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 
+import { useHelperAccount } from '@/lib/use-helper-account';
 import { colors, fonts } from '@/theme';
 
-/** Pagalbininko pusė: keturi skirtukai apačioje. */
+/** Pagalbininko pusė: keturi skirtukai apačioje. Reikia būti prisijungus. */
 export default function HelperLayout() {
+  const account = useHelperAccount();
+
+  // Kol tikrinama, rodome skirtukus (išėmus navigatorių, nutrūktų navigacija).
+  if (account.status === 'signedOut') return <Redirect href="/prisijungimas" />;
+
   return (
     <Tabs
       screenOptions={{
