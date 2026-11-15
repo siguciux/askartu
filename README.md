@@ -33,7 +33,29 @@ Telefonas ir kompiuteris turi būti tame pačiame „Wi‑Fi“. Jei neveikia, p
 - Abiejose pusėse yra „Keisti vaidmenį“, kad galėtumėte pereiti tarp jų.
 - Šriftas Atkinson Hyperlegible, spalvos su patikrintu kontrastu (WCAG AA).
 
-## Patikros sąrašas telefone
+## Kas jau yra (2 etapas)
+
+- **Pagalbininkas** prisijungia el. paštu: įrašo adresą, gauna laišką su kodu, įveda jį. Slaptažodžio nėra. Pirmą kartą įrašo savo vardą.
+- **Senjoro telefonas** slaptažodžio neturi. Pasirinkus „Aš senjoras“, rodomas didelis QR kodas.
+- Pagalbininkas apžvalgoje spaudžia „Susieti senjoro telefoną“, nuskenuoja QR kodą, įrašo senjoro vardą ir pasirenka, kas jis senjorui (šeimos narys, slaugytoja, socialinė darbuotoja).
+- Po to senjoro telefonas pats persijungia į pradžios ekraną ir rodo „Jumis rūpinasi: …“.
+- Senjorą susiejęs pagalbininkas gali **pakviesti kitą** (gauna 8 ženklų kodą, galiojantį 7 dienas) ir pašalinti pagalbininkus.
+- Duomenys laikomi Supabase (Frankfurtas, ES). Kiekvienas mato tik savo senjorus: tai tikrina pati duomenų bazė (žr. `supabase/`).
+
+## Patikros sąrašas telefone (2 etapas)
+
+Reikia dviejų telefonų: jūsų (pagalbininkas) ir antro (senjoras).
+
+- [ ] Antrame telefone: „Aš senjoras“ → matote QR kodą.
+- [ ] Savo telefone: „Aš pagalbininkas“ → įrašote el. paštą → gaunate laišką su kodu → įvedate → įrašote savo vardą.
+- [ ] Apžvalga → „Susieti senjoro telefoną“ → leidžiate kamerą → nuskenuojate QR.
+- [ ] Įrašote senjoro vardą, pasirenkate „Šeimos narys“ → „Susieti“.
+- [ ] Per kelias sekundes senjoro telefone atsiranda „Jumis rūpinasi“ ir jūsų vardas.
+- [ ] Jūsų apžvalgoje matote senjoro vardą.
+- [ ] „Pakviesti pagalbininką“ → sukuriamas kodas, jį galima nusiųsti.
+- [ ] Uždarius ir vėl atidarius programėlę abiejuose telefonuose, viskas išlieka.
+
+## Patikros sąrašas telefone (1 etapas)
 
 - [ ] Programėlė atsidaro ir rodo „Sveiki! Čia ‚Aš kartu‘“.
 - [ ] Paspaudus „Aš senjoras“, matote laikrodį su dabartiniu laiku ir šiandienos datą.
@@ -53,8 +75,10 @@ src/app/          ekranai (kiekvienas failas yra ekranas)
   apie            „Apie programėlę“
 src/components/   dideli mygtukai, kortelės, antraštė, „Atgal“
 src/theme/        spalvos, šriftai, dydžiai
-src/lib/          datos formatavimas, vaidmens įsiminimas
+src/lib/          datos, vaidmuo, ryšys su serveriu (api.ts)
+supabase/         duomenų bazė, saugumo taisyklės ir jų testai
 __tests__/        automatiniai testai
+test-utils/       netikras serveris testams
 ```
 
 ## Programuotojui

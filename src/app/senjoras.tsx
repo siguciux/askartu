@@ -5,21 +5,63 @@ import { AppText } from '@/components/app-text';
 import { BigButton } from '@/components/big-button';
 import { Card } from '@/components/card';
 import { showComingSoon } from '@/components/coming-soon';
+import { Message } from '@/components/message';
 import { Screen } from '@/components/screen';
+import { SeniorPairing } from '@/components/senior-pairing';
+import { relationLabel, type CircleHelper } from '@/lib/care';
 import { formatDayMonth, formatTime, formatWeekday, greeting } from '@/lib/date';
 import { useRole } from '@/lib/role';
 import { useClock } from '@/lib/use-clock';
+import { useSeniorLink } from '@/lib/use-senior-link';
 import { colors, fontSize, radius, spacing } from '@/theme';
 
-/** Senjoro pradžios ekranas. Mygtukai kol kas tik rodo, kad funkcija dar kuriama. */
-export default function SeniorHome() {
-  const now = useClock();
+/**
+ * Senjoro pusė. Kol telefonas nesusietas su pagalbininku, rodomas QR kodas;
+ * po to pradžios ekranas.
+ */
+export default function SeniorScreen() {
+  const link = useSeniorLink();
   const { clearRole } = useRole();
 
   async function switchRole() {
     await clearRole();
     router.replace('/pasirinkimas');
   }
+
+  if (link.status === 'loading') return <Screen>{null}</Screen>;
+
+  if (link.status === 'pairing' || link.status === 'error') {
+    return (
+      <Screen>
+        {link.status === 'pairing' ? (
+          <SeniorPairing token={link.token} />
+        ) : (
+          <>
+            <Message tone="error">{link.message}</Message>
+            <BigButton label="Bandyti dar kartą" onPress={link.retry} />
+          </>
+        )}
+        <SwitchRole onPress={switchRole} />
+      </Screen>
+    );
+  }
+
+  return <SeniorHome helpers={link.status === 'linked' ? link.helpers : []} onSwitchRole={switchRole} />;
+}
+
+function SwitchRole({ onPress }: { onPress: () => void }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel="Keisti vaidmenį" onPress={onPress} style={styles.switch}>
+      <AppText size="small" color="muted">
+        Keisti vaidmenį
+      </AppText>
+    </Pressable>
+  );
+}
+
+/** Senjoro pradžios ekranas. Mygtukai kol kas tik rodo, kad funkcija dar kuriama. */
+function SeniorHome({ helpers, onSwitchRole }: { helpers: CircleHelper[]; onSwitchRole: () => void }) {
+  const now = useClock();
 
   return (
     <Screen>
@@ -51,15 +93,24 @@ export default function SeniorHome() {
 
       <BigButton variant="danger" label="SOS · Reikia pagalbos" onPress={() => showComingSoon('SOS')} />
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Keisti vaidmenį"
-        onPress={switchRole}
-        style={styles.switch}>
-        <AppText size="small" color="muted">
-          Keisti vaidmenį
-        </AppText>
-      </Pressable>
+      {helpers.length > 0 ? (
+        <Card>
+          <AppText bold size="seniorBody">
+            Jumis rūpinasi
+          </AppText>
+          {helpers.map((h) => (
+            <AppText key={h.id} size="seniorBody">
+              {h.displayName}
+              <AppText size="small" color="muted">
+                {'  '}
+                {relationLabel(h.relation)}
+              </AppText>
+            </AppText>
+          ))}
+        </Card>
+      ) : null}
+
+      <SwitchRole onPress={onSwitchRole} />
     </Screen>
   );
 }
